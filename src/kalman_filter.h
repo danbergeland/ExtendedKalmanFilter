@@ -46,6 +46,11 @@ public:
       Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in, Eigen::MatrixXd &Q_in);
 
   /**
+   * @brief 
+   * 
+   */
+    Eigen::MatrixXd CalculateJacobian();
+  /**
    * Prediction Predicts the state and the state covariance
    * using the process model
    * @param delta_T Time between k and k+1 in s
