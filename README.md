@@ -3,13 +3,14 @@ Self-Driving Car Engineer Nanodegree Program
 
 In this project, a mix of radar and laser measurements are read from a text file in to an Extended Kalman Filter.  The filter predicts and updates the position of the tracked object using the Extended Kalman Filter formulas.  The laser data is provided as X, Y coordinate data, and the radar is in polar coordinates (rho, phi, rho-dot).  
 
-The extended Kalman Filter is able to improve the accuracy of localizing a tracked object by using statics to infer more precise coordinates!  To accomplish this, the data from the radar needs to be converted from polar to cartesian coordinates.  Since the arctan function of y/x is used to infer phi, it creates non-linearities in updates.  To accomodate the mathematical distortion of the different sensor coordinates, the Taylor series expansion is used. 
+The extended Kalman Filter is able to improve the accuracy of localizing a tracked object by using statistics to infer more precise coordinates!  To accomplish this, the data from the radar needs to be converted from polar to cartesian coordinates.  Since the arctan function of y/x is used to infer phi, it creates non-gaussian distributions of measurements for the range of measurements.  To resolve this, the Extended Kalman Filter uses linearization to approximate the values.  
 
+To accomodate the mathematical distortion of the different sensor coordinates, the Taylor series expansion is used.
 Recall that the Taylor series approximates functions as h(x) = h(u)+ d(x-u)/dx
 
-The Jacobian matrix is calculated for the updated x,y positions at each additional data point.  The Jacobian provides the partial derivatives for polar to cartesian values (e.g. dphi/dx, dphi/dy), which allows for matrix multiplication with polar coordinates to result in projected cartesian values.
+The Jacobian matrix is calculated for the updated x,y positions at each additional data point.  The Jacobian provides the partial derivatives for polar to cartesian values (e.g. dphi/dx, dphi/dy), which allows for matrix multiplication with polar coordinates to result in projected cartesian values.  When updating with radar values, the Jacobian is used to transform the values into cartesian coordinates.
 
-The code demonstrates the improved accuracy over either sensor.  Position accuracy using root mean square error (RMSE) goes from over .1 using only laser updates, and .15 using radar, down to .05.  Sensor fusion, therefor, can take two sensors with similar error and generate a more accurate sensing pipeline.
+The code demonstrates the improved accuracy over either sensor.  Position accuracy using root mean square error (RMSE) goes from over .1 using only laser updates, and .15 using radar, down to .06.  Sensor fusion, therefor, can take two sensors with similar error and generate a more accurate sensing pipeline.
 
 ---
 
