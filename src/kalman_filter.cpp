@@ -28,7 +28,6 @@ MatrixXd KalmanFilter::CalculateJacobian() {
 	float vx = x_(2);
 	float vy = x_(3);
 
-	//TODO: YOUR CODE HERE 
     float px2 = px*px;
     float py2 = py*py;
     float hyp = sqrt(px2+py2);
@@ -76,9 +75,21 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   TODO:
     * update the state by using Extended Kalman Filter equations
   */
+    VectorXd hx = VectorXd(3);
+    float px = x_(0);
+    float py = x_(1);
+    float vx = x_(2);
+    float vy = x_(3);
+    float hyp = sqrt(px*px+py*py);
+    //avoid divide by 0 in atan function
+    if(px>.0001||px<-.0001)
+    {
+        hx << hyp, atan2(py,px), (px*vx+py*vy)/hyp;
+    }
+
     MatrixXd Hj = CalculateJacobian();
-    VectorXd z_pred = Hj * x_;
-    VectorXd y = z - z_pred;
+    //VectorXd z_pred = Hj * x_;
+    VectorXd y = z - hx;
     MatrixXd Ht = Hj.transpose();
     MatrixXd S = Hj * P_ * Ht + R_;
     MatrixXd Si = S.inverse();

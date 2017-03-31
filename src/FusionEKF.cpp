@@ -89,8 +89,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       float rho_dot = measurement_pack.raw_measurements_(2);
       float px = cos(phi)*rho;
       float py = sin(phi)*rho;
-       //ekf_.x_ << px,py,rho_dot*cos(phi),rho_dot*sin(phi);
-       ekf_.x_ << px,py,0,0;
+       ekf_.x_ << px,py,rho_dot*cos(phi),rho_dot*sin(phi);
 #ifdef DEBUG
         std::cout<<"Init w Radar\n\r";
 #endif
@@ -149,20 +148,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 #ifdef DEBUG
         std::cout<<"Updating Radar\n\r";
 #endif
-    double phi = measurement_pack.raw_measurements_(1);
-    //Move phi back to within +/- pi if it's outside this range
-    if(phi<-3.1415)
-    {
-        phi += 6.283;
-    }
-    else if(phi>3.1415)
-    {
-        phi -= 6.283;
-    }
-    VectorXd modData = VectorXd(3);
-    modData<<measurement_pack.raw_measurements_(0),phi,measurement_pack.raw_measurements_(2);
+
     ekf_.R_ = R_radar_;
-    ekf_.UpdateEKF(modData);
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+
   } else {
     // Laser updates
 #ifdef DEBUG
@@ -171,6 +160,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.H_ = H_laser_;
     ekf_.R_ = R_laser_;
     ekf_.Update(measurement_pack.raw_measurements_);
+
   }
 
   // print the output
